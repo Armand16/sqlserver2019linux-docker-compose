@@ -5,27 +5,19 @@ networks:
     driver: bridge
 
 volumes:
-  sql-server-data:
-    driver: local
-  sqldata:
-  sqllog:
-  sqlbackup:
+  sqlvolume:
 
 services:
   db:
-    image: mcr.microsoft.com/mssql/server:2019-CU3-ubuntu-18.04
-    container_name: db-sqlserver
+    image: mcr.microsoft.com/mssql/server:2022-CU11-ubuntu-22.04
+    container_name: db-sqlserver2022
     networks:
       - app-network-public
     restart: always
-    env_file:
-      - sqlserver.env
-      - sapassword.env
+    environment:
+        - ACCEPT_EULA=Y
+        - MSSQL_SA_PASSWORD=P@ssw0rd!
     ports:
       - '1433:1433'
     volumes:
-      - sql-server-data:/var/opt/mssql/
-      - sqldata:/var/opt/sqlserver/data
-      - sqllog:/var/opt/sqlserver/log
-      - sqlbackup:/var/opt/sqlserver/backup
-      - /c/docker/shared:/usr/shared
+      - sqlvolume:/var/opt/mssql
